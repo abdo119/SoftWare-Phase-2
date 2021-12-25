@@ -3,8 +3,10 @@ package com.example.demo.services;
 import com.example.demo.models.Customer;
 import com.example.demo.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.example.demo.repositorys.CustomerRepo;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.Objects;
@@ -22,8 +24,7 @@ public class CustomerServices {
             System.out.println("Your request is created successfully!");
             return customerRepo.save(customer);
         }else {
-            System.out.println("This user is already found!!");
-            return null;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"This user is already found");
         }
 
 

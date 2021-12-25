@@ -25,7 +25,9 @@ public class Ride {
     protected String source;
     @Column
     protected double price ;
-    @OneToOne
+    @Column
+    protected double discount = 0 ;
+    @OneToOne()
     @JoinColumn(name = "driver_id")
     protected Driver driver;
 }

@@ -43,11 +43,11 @@ public class Driver {
         count++;
     }
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn()
     protected List<SuccessfulRide> acceptedRides;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn()
-    protected List<Ride> favouriteAreas;
+    protected List<FavouriteAreas> favouriteAreas;
 }

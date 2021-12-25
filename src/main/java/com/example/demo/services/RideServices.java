@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.models.Driver;
+import com.example.demo.models.FavouriteAreas;
 import com.example.demo.models.Ride;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,10 @@ public class RideServices {
         ride.setDestination(destination);
         Driver driver = ride.getDriver();
         driver.setAveRate(rate);
-        driver.getFavouriteAreas().add(ride);
+        FavouriteAreas favouriteAreas = new FavouriteAreas();
+        favouriteAreas.setSource(ride.getSource());
+        favouriteAreas.setPrice(ride.getPrice());
+        driver.getFavouriteAreas().add(favouriteAreas);
         driverServices.update(driver);
         ridesRepo.delete(ride);
     }

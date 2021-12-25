@@ -4,21 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-@Entity
+
 @Setter
 @Getter
-public class Admin{
+@Entity
+public class FavouriteAreas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     protected Long id ;
-    @Column
-    protected String username;
-    @Column
-    protected String email;
-    @Column
-    protected String phone;
-    @Column
-    protected String password;
-
+    private String source;
+    private double price;
 }

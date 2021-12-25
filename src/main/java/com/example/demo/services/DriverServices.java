@@ -1,12 +1,12 @@
 package com.example.demo.services;
 
-import com.example.demo.models.Driver;
-import com.example.demo.models.Ride;
-import com.example.demo.models.User;
+import com.example.demo.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.example.demo.repositorys.DriversRepo;
 import com.example.demo.repositorys.RidesRepo;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Objects;
 
@@ -20,13 +20,18 @@ public class DriverServices {
     @Autowired
     RidesRepo ridesRepo;
 
-    public void addRide(String source, Double price, Driver driver ){
+    public Driver addRide(DriverRequest driverRequest){
         Ride ride = new Ride();
-        ride.setSource(source);
-        ride.setPrice(price);
-        ride.setDriver(driver);
-        driver.getFavouriteAreas().add(ride);
+        ride.setSource(driverRequest.getSource());
+        ride.setPrice(driverRequest.getPrice());
+        ride.setDriver(driverRequest.getDriver());
+        Driver driver = driversRepo.findByEmail(driverRequest.getDriver().getEmail());
+        FavouriteAreas favouriteAreas = new FavouriteAreas();
+        favouriteAreas.setSource(ride.getSource());
+        favouriteAreas.setPrice(ride.getPrice());
+        driver.getFavouriteAreas().add(favouriteAreas);
         ridesRepo.save(ride);
+        return  driversRepo.save(driver);
     }
     public Driver update(Driver driver){
 //        Driver oldDriver = driversRepo.findById(id).orElseThrow(()
@@ -35,10 +40,15 @@ public class DriverServices {
         return driversRepo.save(driver);
     }
     public Driver signup(Driver driver) {
+        Driver temp = driversRepo.findByEmail(driver.getEmail());
+        if(temp == null){
+            driver.setCheck(false);
+            System.out.println("Your request is pending...");
+            return driversRepo.save(driver);
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"This user is already found");
+        }
 
-        driver.setCheck(false);
-        System.out.println("Your request is pending...");
-        return driversRepo.save(driver);
     }
     public long login(String email, String password) {
         Driver driver = driversRepo.findByEmail(email);
