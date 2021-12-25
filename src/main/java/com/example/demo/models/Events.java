@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 
 public class Events {
@@ -21,9 +20,16 @@ public class Events {
     @Column
     protected LocalDateTime eventTime;
     @Column
-    protected double price;
-    @Column
     protected String captainName;
     @Column
     protected String customerName;
+    @Column
+    protected double price;
+
+    public Events(String eventName, LocalDateTime eventTime, String captainName, String customerName) {
+        this.eventName = eventName;
+        this.eventTime = eventTime;
+        this.captainName = captainName;
+        this.customerName = customerName;
+    }
 }

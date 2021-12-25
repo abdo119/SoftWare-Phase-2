@@ -49,6 +49,14 @@ public class DriverController {
         events.setEventName("Captain has arrived Destination");
         return commonServices.putEvent(events);
     }
+    @PostMapping(value = "/withdraw/{id}/{type}/{amount}")
+    public boolean withdraw(@PathVariable long id,@PathVariable int type,@PathVariable double amount){
+        return commonServices.withdraw(id,type,amount);
+    }
+    @PostMapping(value = "/deposit/{id}/{type}/{amount}")
+    public double deposit(@PathVariable long id,@PathVariable int type,@PathVariable double amount){
+        return commonServices.deposit(id,type,amount);
+    }
 
 
 

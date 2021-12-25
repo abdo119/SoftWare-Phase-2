@@ -27,7 +27,11 @@ public class Ride {
     protected double price ;
     @Column
     protected double discount = 0 ;
+    @Column
+    protected int numberOfPassenger;
     @OneToOne()
     @JoinColumn(name = "driver_id")
     protected Driver driver;
+    @Column
+    boolean flag = true;
 }

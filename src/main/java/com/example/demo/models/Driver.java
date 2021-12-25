@@ -35,13 +35,8 @@ public class Driver {
     protected String national_id ;
     @Column
     protected double aveRate ;
-
-    private static int count = 1;
-
-    public void setAveRate(double aveRate) {
-        this.aveRate = (this.aveRate+aveRate)/count;
-        count++;
-    }
+    @Column
+    protected double balance;
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn()
@@ -50,4 +45,10 @@ public class Driver {
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn()
     protected List<FavouriteAreas> favouriteAreas;
+    private static int count = 1;
+
+    public void setAveRate(double aveRate) {
+        this.aveRate = (this.aveRate+aveRate)/count;
+        count++;
+    }
 }

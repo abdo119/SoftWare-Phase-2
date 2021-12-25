@@ -13,6 +13,8 @@ public class FavouriteAreas {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     protected Long id ;
+    @Column
     private String source;
+    @Column
     private double price;
 }
