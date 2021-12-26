@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -34,9 +35,9 @@ public class Driver {
     @Column
     protected String national_id ;
     @Column
-    protected double aveRate ;
+    protected double aveRate= 0 ;
     @Column
-    protected double balance;
+    protected double balance = 0;
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn()
@@ -44,7 +45,7 @@ public class Driver {
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn()
-    protected List<FavouriteAreas> favouriteAreas;
+    protected List<FavouriteAreas> favouriteAreas = new ArrayList<>();
     private static int count = 1;
 
     public void setAveRate(double aveRate) {

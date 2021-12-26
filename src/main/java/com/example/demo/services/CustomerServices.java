@@ -66,15 +66,15 @@ public class CustomerServices {
         double discount = 0;
         Customer customer = customerRepo.getById(bookingDetails.getCustomerId());
         if(customer.getRideCounter()==1){
-            discount = (10/100)*ride.getPrice();
+            discount = 0.1*ride.getPrice();
         }
         else if(ride.getDiscount()!=0){
-            discount = (10/100)*ride.getPrice();
+            discount = 0.1*ride.getPrice();
         }
         else if(bookingDetails.getNumOfPassengers()>1){
-            discount = (5/100)*ride.getPrice();
+            discount = 0.05*ride.getPrice();
         }else if(Objects.equals(customer.getBirthDate(), LocalDate.now())){
-            discount = (10/100)*ride.getPrice();
+            discount = 0.1*ride.getPrice();
         }
         if(commonServices.withdraw(bookingDetails.getCustomerId(),1,ride.getPrice()-discount)){
             customer.setRideCounter(customer.getRideCounter()+1);
@@ -94,6 +94,7 @@ public class CustomerServices {
             successfulRide.setRide(ride);
             driverServices.update(driver,bookingDetails.getRate(), successfulRideRepo.save(successfulRide).getId(),customerRepo.getById(bookingDetails.getCustomerId()).getUsername());
 
-        }
+        }else
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 }

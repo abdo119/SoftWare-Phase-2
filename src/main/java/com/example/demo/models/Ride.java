@@ -29,7 +29,7 @@ public class Ride {
     protected double discount = 0 ;
     @Column
     protected int numberOfPassenger;
-    @OneToOne()
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "driver_id")
     protected Driver driver;
     @Column

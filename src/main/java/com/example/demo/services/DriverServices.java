@@ -33,6 +33,9 @@ public class DriverServices {
     CommonServices commonServices;
 
     public Driver addRide(DriverRequest driverRequest){
+        Driver driver = driversRepo.getById(driverRequest.getDriver().getId());
+        FavouriteAreas favouriteAreas = new FavouriteAreas();
+        driver.getFavouriteAreas().add(favouriteAreas);
         Ride ride = new Ride();
         Events event = new Events();
         event.setPrice(driverRequest.getPrice());
@@ -40,14 +43,11 @@ public class DriverServices {
         event.setCaptainName(driverRequest.getDriver().getUsername());
         event.setEventName("Captain put a Price");
         commonServices.putEvent(event);
+        favouriteAreas.setSource(driverRequest.getSource());
+        favouriteAreas.setPrice(driverRequest.getPrice());
         ride.setSource(driverRequest.getSource());
         ride.setPrice(driverRequest.getPrice());
-        ride.setDriver(driverRequest.getDriver());
-        Driver driver = driversRepo.findByEmail(driverRequest.getDriver().getEmail());
-        FavouriteAreas favouriteAreas = new FavouriteAreas();
-        favouriteAreas.setSource(ride.getSource());
-        favouriteAreas.setPrice(ride.getPrice());
-        driver.getFavouriteAreas().add(favouriteAreas);
+        ride.setDriver(driver);
         ridesRepo.save(ride);
         return  driversRepo.save(driver);
     }
@@ -57,12 +57,11 @@ public class DriverServices {
         successfulRideRepo.save(successfulRide);
         Driver newDriver = driversRepo.findByEmail(driver.getEmail());
         newDriver.getAcceptedRides().add(successfulRide);
+        newDriver.setAveRate(rate);
         Events event = new Events("captainArrivedSource",LocalDateTime.now(),driver.getUsername(),customerName);
         commonServices.putEvent(event);
-        event.setEventName("captainArrivedDest");
-        event.setEventTime(LocalDateTime.now().plusMinutes(15));
-        commonServices.putEvent(event);
-        ridesRepo.delete(successfulRide.getRide());
+        Events event2= new Events("captainArrivedDest",LocalDateTime.now().plusMinutes(15),driver.getUsername(),customerName);
+        commonServices.putEvent(event2);
         return driversRepo.save(newDriver);
     }
     public Driver signup(Driver driver) {
