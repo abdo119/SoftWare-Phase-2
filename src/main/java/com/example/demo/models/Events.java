@@ -1,6 +1,8 @@
 package com.example.demo.models;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,7 +16,7 @@ public class Events {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    protected Long id ;
+    protected Long id;
     @Column
     protected String eventName;
     @Column

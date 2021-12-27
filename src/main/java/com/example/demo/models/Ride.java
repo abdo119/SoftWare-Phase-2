@@ -20,16 +20,16 @@ public class Ride {
     @Column
     protected Long id;
     @Column
-    protected String destination ;
+    protected String destination;
     @Column
     protected String source;
     @Column
-    protected double price ;
+    protected double price;
     @Column
-    protected double discount = 0 ;
+    protected double discount = 0;
     @Column
     protected int numberOfPassenger;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "driver_id")
     protected Driver driver;
     @Column

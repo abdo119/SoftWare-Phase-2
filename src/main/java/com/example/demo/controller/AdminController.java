@@ -21,18 +21,21 @@ public class AdminController {
 
     @PostMapping(value = "/driversPending/{id}/{choice}")
     public Driver driversPending(@PathVariable int choice, @PathVariable long id) {
-        return adminServices.driversPending(id,choice);
+        return adminServices.driversPending(id, choice);
     }
+
     @PostMapping(value = "/suspendDriver/{id}/{action}")
-    public Driver suspendDriver(@PathVariable long id , @PathVariable boolean  action){
-        return adminServices.suspendDriver(id,action);
+    public Driver suspendDriver(@PathVariable long id, @PathVariable boolean action) {
+        return adminServices.suspendDriver(id, action);
     }
+
     @PostMapping(value = "/suspendCustomer/{id}/{action}")
-    public Customer suspendCustomer(@PathVariable long id , @PathVariable boolean  action){
-        return adminServices.suspendCustomer(id,action);
+    public Customer suspendCustomer(@PathVariable long id, @PathVariable boolean action) {
+        return adminServices.suspendCustomer(id, action);
     }
+
     @PostMapping(value = "/addDiscount/{id}/{discount}")
-    public Ride addDiscount(@PathVariable long id , @PathVariable double  discount){
-        return adminServices.addDiscount(id,discount);
+    public Ride addDiscount(@PathVariable long id, @PathVariable double discount) {
+        return adminServices.addDiscount(id, discount);
     }
 }

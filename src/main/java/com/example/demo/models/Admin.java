@@ -4,14 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+
 @Entity
 @Setter
 @Getter
-public class Admin{
+public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    protected Long id ;
+    protected Long id;
     @Column
     protected String username;
     @Column

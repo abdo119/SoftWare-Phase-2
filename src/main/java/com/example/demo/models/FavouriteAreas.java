@@ -12,7 +12,7 @@ public class FavouriteAreas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    protected Long id ;
+    protected Long id;
     @Column
     private String source;
     @Column

@@ -1,15 +1,14 @@
 package com.example.demo.services;
 
 import com.example.demo.models.*;
+import com.example.demo.repositorys.CustomerRepo;
 import com.example.demo.repositorys.DriversRepo;
 import com.example.demo.repositorys.RidesRepo;
 import com.example.demo.repositorys.SuccessfulRideRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import com.example.demo.repositorys.CustomerRepo;
 import org.springframework.web.server.ResponseStatusException;
-
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,15 +36,14 @@ public class CustomerServices {
     SuccessfulRideRepo successfulRideRepo;
 
 
-
     public Customer signup(Customer customer) {
         Customer cus = customerRepo.findByEmail(customer.getEmail());
         if (cus == null) {
             customer.setCheck(true);
             System.out.println("Your request is created successfully!");
             return customerRepo.save(customer);
-        }else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"This user is already found");
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This user is already found");
         }
 
 
@@ -65,26 +63,24 @@ public class CustomerServices {
         Ride ride = ridesRepo.getById(bookingDetails.getRideId());
         double discount = 0;
         Customer customer = customerRepo.getById(bookingDetails.getCustomerId());
-        if(customer.getRideCounter()==1){
-            discount = 0.1*ride.getPrice();
+        if (customer.getRideCounter() == 1) {
+            discount = 0.1 * ride.getPrice();
+        } else if (ride.getDiscount() != 0) {
+            discount = 0.1 * ride.getPrice();
+        } else if (bookingDetails.getNumOfPassengers() > 1) {
+            discount = 0.05 * ride.getPrice();
+        } else if (Objects.equals(customer.getBirthDate(), LocalDate.now())) {
+            discount = 0.1 * ride.getPrice();
         }
-        else if(ride.getDiscount()!=0){
-            discount = 0.1*ride.getPrice();
-        }
-        else if(bookingDetails.getNumOfPassengers()>1){
-            discount = 0.05*ride.getPrice();
-        }else if(Objects.equals(customer.getBirthDate(), LocalDate.now())){
-            discount = 0.1*ride.getPrice();
-        }
-        if(commonServices.withdraw(bookingDetails.getCustomerId(),1,ride.getPrice()-discount)){
-            customer.setRideCounter(customer.getRideCounter()+1);
+        if (commonServices.withdraw(bookingDetails.getCustomerId(), 1, ride.getPrice() - discount)) {
+            customer.setRideCounter(customer.getRideCounter() + 1);
             customerRepo.save(customer);
             ride.setFlag(false);
             ride.setDestination(bookingDetails.getDestination());
             ride.setNumberOfPassenger(bookingDetails.getNumOfPassengers());
             ridesRepo.save(ride);
             Driver driver = ride.getDriver();
-            commonServices.deposit(driver.getId(),2,ride.getPrice());
+            commonServices.deposit(driver.getId(), 2, ride.getPrice());
             Events event = new Events();
             event.setEventName("Customer accept Price");
             event.setEventTime(LocalDateTime.now());
@@ -92,9 +88,9 @@ public class CustomerServices {
             commonServices.putEvent(event);
             SuccessfulRide successfulRide = new SuccessfulRide();
             successfulRide.setRide(ride);
-            driverServices.update(driver,bookingDetails.getRate(), successfulRideRepo.save(successfulRide).getId(),customerRepo.getById(bookingDetails.getCustomerId()).getUsername());
+            driverServices.update(driver, bookingDetails.getRate(), successfulRideRepo.save(successfulRide).getId(), customerRepo.getById(bookingDetails.getCustomerId()).getUsername());
 
-        }else
+        } else
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 }
