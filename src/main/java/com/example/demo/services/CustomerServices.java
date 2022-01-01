@@ -1,10 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.models.*;
-import com.example.demo.repositorys.CustomerRepo;
-import com.example.demo.repositorys.DriversRepo;
-import com.example.demo.repositorys.RidesRepo;
-import com.example.demo.repositorys.SuccessfulRideRepo;
+import com.example.demo.repositorys.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -37,6 +34,9 @@ public class CustomerServices {
     @Autowired
     SuccessfulRideRepo successfulRideRepo;
 
+    @Autowired
+    HolidayRepo holidayRepo;
+
 
     public Customer signup(Customer customer) {
         Customer cus = customerRepo.findByEmail(customer.getEmail());
@@ -63,17 +63,25 @@ public class CustomerServices {
 
     public void bookRide(BookingDetails bookingDetails) {
         Ride ride = ridesRepo.getById(bookingDetails.getRideId());
+        DiscountDecorator discountDecorator = new DiscountDecorator(new InitialDiscount());
         double discount = 0;
         Customer customer = customerRepo.getById(bookingDetails.getCustomerId());
         if (customer.getRideCounter() == 1) {
-            discount = 0.1 * ride.getPrice();
-        } else if (ride.getDiscount() != 0) {
-            discount = 0.1 * ride.getPrice();
-        } else if (bookingDetails.getNumOfPassengers() > 1) {
-            discount = 0.05 * ride.getPrice();
-        } else if (Objects.equals(customer.getBirthDate(), LocalDate.now())) {
-            discount = 0.1 * ride.getPrice();
+            discountDecorator = new FirstRideDiscount(discountDecorator.getDiscount());
         }
+        if (isPublicHoliday()) {
+            discountDecorator = new PublicHoliday(discountDecorator.getDiscount());
+        }
+        if (ride.getDiscount() != 0) {
+            discountDecorator = new FavAreaDiscount(discountDecorator.getDiscount());
+        }
+        if (bookingDetails.getNumOfPassengers() > 1) {
+            discountDecorator = new PassengersDiscount(discountDecorator.getDiscount());
+        }
+        if (Objects.equals(customer.getBirthDate(), LocalDate.now())) {
+            discountDecorator = new BirthDayDiscount(discountDecorator.getDiscount());
+        }
+        discount = discountDecorator.getDiscountValue() * ride.getPrice();
         if (commonServices.withdraw(bookingDetails.getCustomerId(), 1, ride.getPrice() - discount)) {
             customer.setRideCounter(customer.getRideCounter() + 1);
             customerRepo.save(customer);
@@ -95,17 +103,29 @@ public class CustomerServices {
         } else
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
-    public Ride getRide(long id){
+
+    public Ride getRide(long id) {
         return ridesRepo.getById(id);
     }
-    public List<Ride> getAllRideBySource(String source){
+
+    public List<Ride> getAllRideBySource(String source) {
         List<Ride> allRides = ridesRepo.findAll();
         List<Ride> rides = new ArrayList<>();
-        for(Ride ride :allRides){
-            if(Objects.equals(ride.getSource(), source)){
+        for (Ride ride : allRides) {
+            if (Objects.equals(ride.getSource(), source)) {
                 rides.add(ride);
             }
         }
         return rides;
+    }
+
+    protected boolean isPublicHoliday() {
+        List<Holidays> publicHolidays = holidayRepo.findAll();
+        for (Holidays holiday : publicHolidays) {
+            if (Objects.equals(holiday.getDate(), LocalDate.now())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

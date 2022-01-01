@@ -26,6 +26,9 @@ public class AdminServices {
     RidesRepo ridesRepo;
     @Autowired
     EventsRepo eventsRepo;
+    @Autowired
+    HolidayRepo holidayRepo;
+
 
 
     public long login(String email, String password) {
@@ -106,5 +109,8 @@ public class AdminServices {
         Ride oldRide = ridesRepo.getById(id);
         ride.setId(oldRide.getId());
         return ridesRepo.save(ride);
+    }
+    public Holidays addHoliday(Holidays holiday){
+        return holidayRepo.save(holiday);
     }
 }

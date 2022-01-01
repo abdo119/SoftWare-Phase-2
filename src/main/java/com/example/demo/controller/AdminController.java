@@ -54,7 +54,7 @@ public class AdminController {
     public List<Customer> getCustomer() {
         return adminServices.getAllCustomer();
     }
-    @GetMapping(value = "/getCustomer/{id}")
+    @GetMapping(value = "/getDriver/{id}")
     public Driver getDriver(@PathVariable long id) {
         return adminServices.getDriver(id);
     }
@@ -66,5 +66,8 @@ public class AdminController {
     public Ride updateRide(@RequestBody Ride ride, @PathVariable long id){
         return adminServices.updateRide(ride,id);
     }
-
+    @PostMapping(value = "/addPublicHoliday")
+    public Holidays addHoliday(@RequestBody Holidays holiday){
+       return adminServices.addHoliday(holiday);
+    }
 }
