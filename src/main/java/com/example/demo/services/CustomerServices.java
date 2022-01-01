@@ -12,6 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -92,5 +94,18 @@ public class CustomerServices {
 
         } else
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+    public Ride getRide(long id){
+        return ridesRepo.getById(id);
+    }
+    public List<Ride> getAllRideBySource(String source){
+        List<Ride> allRides = ridesRepo.findAll();
+        List<Ride> rides = new ArrayList<>();
+        for(Ride ride :allRides){
+            if(Objects.equals(ride.getSource(), source)){
+                rides.add(ride);
+            }
+        }
+        return rides;
     }
 }

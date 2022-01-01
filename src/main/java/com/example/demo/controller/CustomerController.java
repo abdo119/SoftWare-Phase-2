@@ -3,20 +3,19 @@ package com.example.demo.controller;
 import com.example.demo.models.BookingDetails;
 import com.example.demo.models.Customer;
 import com.example.demo.models.Events;
-import com.example.demo.repositorys.DriversRepo;
+import com.example.demo.models.Ride;
 import com.example.demo.services.CommonServices;
 import com.example.demo.services.CustomerServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/customer")
 public class CustomerController {
     @Autowired
     CustomerServices customerServices;
-
-    @Autowired
-    DriversRepo driversRepo;
 
     @Autowired
     CommonServices commonServices;
@@ -51,5 +50,14 @@ public class CustomerController {
     @PostMapping(value = "/bookRide")
     void bookRide(@RequestBody BookingDetails bookingDetails) {
         customerServices.bookRide(bookingDetails);
+    }
+
+    @GetMapping (value = "/getRidesBySource")
+    List<Ride> getAllRidesBySource(@RequestParam(name = "source") String source){
+        return customerServices.getAllRideBySource(source);
+    }
+    @GetMapping (value = "/getRidesBySource/{id}")
+    Ride getAllRidesBySource(@PathVariable long id){
+        return customerServices.getRide(id);
     }
 }

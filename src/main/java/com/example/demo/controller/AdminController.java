@@ -1,18 +1,18 @@
 package com.example.demo.controller;
 
-import com.example.demo.models.Admin;
-import com.example.demo.models.Customer;
-import com.example.demo.models.Driver;
-import com.example.demo.models.Ride;
+import com.example.demo.models.*;
 import com.example.demo.services.AdminServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/admin")
 public class AdminController {
     @Autowired
     AdminServices adminServices;
+
 
     @PostMapping(value = "/login")
     long login(@RequestBody Admin admin) {
@@ -38,4 +38,33 @@ public class AdminController {
     public Ride addDiscount(@PathVariable long id, @PathVariable double discount) {
         return adminServices.addDiscount(id, discount);
     }
+    @GetMapping(value = "/getCustomerEvents")
+    public List<Events> getAllUserEvents() {
+        return adminServices.getCustomerEvents();
+    }
+    @GetMapping(value = "/getDriversEvents")
+    public List<Events> getDriverEvents() {
+        return adminServices.getDriversEvents();
+    }
+    @GetMapping(value = "/getCustomer/{id}")
+    public Customer getCustomer(@PathVariable long id) {
+        return adminServices.getCustomer(id);
+    }
+    @GetMapping(value = "/getAllCustomers")
+    public List<Customer> getCustomer() {
+        return adminServices.getAllCustomer();
+    }
+    @GetMapping(value = "/getCustomer/{id}")
+    public Driver getDriver(@PathVariable long id) {
+        return adminServices.getDriver(id);
+    }
+    @GetMapping(value = "/getAllDriver")
+    public List<Driver> getAllDriver() {
+        return adminServices.getAllDriver();
+    }
+    @PostMapping(value = "/updateRide/{id}")
+    public Ride updateRide(@RequestBody Ride ride, @PathVariable long id){
+        return adminServices.updateRide(ride,id);
+    }
+
 }

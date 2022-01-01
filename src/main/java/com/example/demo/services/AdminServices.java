@@ -1,18 +1,14 @@
 package com.example.demo.services;
 
-import com.example.demo.models.Admin;
-import com.example.demo.models.Customer;
-import com.example.demo.models.Driver;
-import com.example.demo.models.Ride;
-import com.example.demo.repositorys.AdminRepo;
-import com.example.demo.repositorys.CustomerRepo;
-import com.example.demo.repositorys.DriversRepo;
-import com.example.demo.repositorys.RidesRepo;
+import com.example.demo.models.*;
+import com.example.demo.repositorys.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -28,6 +24,9 @@ public class AdminServices {
 
     @Autowired
     RidesRepo ridesRepo;
+    @Autowired
+    EventsRepo eventsRepo;
+
 
     public long login(String email, String password) {
         Admin admin = adminRepo.findByEmail(email);
@@ -67,6 +66,45 @@ public class AdminServices {
     public Ride addDiscount(long id, double discount) {
         Ride ride = ridesRepo.getById(id);
         ride.setDiscount(discount);
+        return ridesRepo.save(ride);
+    }
+    public List<Events> getCustomerEvents(){
+        List <Events> allEvents = eventsRepo.findAll();
+        List <Events> userEvents = new ArrayList<>();
+
+        for(Events event: allEvents){
+            if(Objects.equals(event.getEventName(), "Customer accept Price")){
+                userEvents.add(event);
+            }
+        }
+        return userEvents;
+    }
+    public List<Events> getDriversEvents(){
+        List <Events> allEvents = eventsRepo.findAll();
+        List <Events> DriversEvents = new ArrayList<>();
+
+        for(Events event: allEvents){
+            if(!Objects.equals(event.getEventName(), "Customer accept Price")){
+                DriversEvents.add(event);
+            }
+        }
+        return DriversEvents;
+    }
+    public Customer getCustomer(long id){
+        return customerRepo.getById(id);
+    }
+    public List<Customer> getAllCustomer(){
+        return customerRepo.findAll();
+    }
+    public Driver getDriver(long id){
+        return driversRepo.getById(id);
+    }
+    public List<Driver> getAllDriver(){
+        return driversRepo.findAll();
+    }
+    public Ride updateRide(Ride ride,long id){
+        Ride oldRide = ridesRepo.getById(id);
+        ride.setId(oldRide.getId());
         return ridesRepo.save(ride);
     }
 }

@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.models.Driver;
 import com.example.demo.models.DriverRequest;
 import com.example.demo.models.Events;
-import com.example.demo.repositorys.DriversRepo;
 import com.example.demo.services.CommonServices;
 import com.example.demo.services.DriverServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,6 @@ import org.springframework.web.bind.annotation.*;
 public class DriverController {
     @Autowired
     DriverServices driverServices;
-
-    @Autowired
-    DriversRepo driversRepo;
 
     @Autowired
     CommonServices commonServices;
