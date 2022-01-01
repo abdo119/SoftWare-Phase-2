@@ -60,12 +60,8 @@ public class CustomerServices {
             return -1;
         }
     }
-
-    public void bookRide(BookingDetails bookingDetails) {
-        Ride ride = ridesRepo.getById(bookingDetails.getRideId());
+    private double calcDiscount(Customer customer , Ride ride,BookingDetails bookingDetails){
         DiscountDecorator discountDecorator = new DiscountDecorator(new InitialDiscount());
-        double discount = 0;
-        Customer customer = customerRepo.getById(bookingDetails.getCustomerId());
         if (customer.getRideCounter() == 1) {
             discountDecorator = new FirstRideDiscount(discountDecorator.getDiscount());
         }
@@ -81,7 +77,14 @@ public class CustomerServices {
         if (Objects.equals(customer.getBirthDate(), LocalDate.now())) {
             discountDecorator = new BirthDayDiscount(discountDecorator.getDiscount());
         }
-        discount = discountDecorator.getDiscountValue() * ride.getPrice();
+        return discountDecorator.getDiscountValue() * ride.getPrice();
+    }
+
+    public void bookRide(BookingDetails bookingDetails) {
+        Ride ride = ridesRepo.getById(bookingDetails.getRideId());
+        Customer customer = customerRepo.getById(bookingDetails.getCustomerId());
+
+        double discount = calcDiscount(customer,ride,bookingDetails);
         if (commonServices.withdraw(bookingDetails.getCustomerId(), 1, ride.getPrice() - discount)) {
             customer.setRideCounter(customer.getRideCounter() + 1);
             customerRepo.save(customer);
