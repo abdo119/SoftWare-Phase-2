@@ -34,22 +34,26 @@ public class DriverServices {
 
     public Driver addRide(DriverRequest driverRequest) {
         Driver driver = driversRepo.getById(driverRequest.getDriver().getId());
-        FavouriteAreas favouriteAreas = new FavouriteAreas();
-        favouriteAreas.setSource(driverRequest.getSource());
-        favouriteAreas.setPrice(driverRequest.getPrice());
-        driver.getFavouriteAreas().add(favouriteAreas);
-        Ride ride = new Ride();
-        Events event = new Events();
-        event.setPrice(driverRequest.getPrice());
-        event.setEventTime(LocalDateTime.now());
-        event.setCaptainName(driverRequest.getDriver().getUsername());
-        event.setEventName("Captain put a Price");
-        commonServices.putEvent(event);
-        ride.setSource(driverRequest.getSource());
-        ride.setPrice(driverRequest.getPrice());
-        ride.setDriver(driver);
-        ridesRepo.save(ride);
-        return driversRepo.save(driver);
+        if(driver.isCheck()){
+            FavouriteAreas favouriteAreas = new FavouriteAreas();
+            favouriteAreas.setSource(driverRequest.getSource());
+            favouriteAreas.setPrice(driverRequest.getPrice());
+            driver.getFavouriteAreas().add(favouriteAreas);
+            Ride ride = new Ride();
+            Events event = new Events();
+            event.setPrice(driverRequest.getPrice());
+            event.setEventTime(LocalDateTime.now());
+            event.setCaptainName(driverRequest.getDriver().getUsername());
+            event.setEventName("Captain put a Price");
+            commonServices.putEvent(event);
+            ride.setSource(driverRequest.getSource());
+            ride.setPrice(driverRequest.getPrice());
+            ride.setDriver(driver);
+            ridesRepo.save(ride);
+            return driversRepo.save(driver);
+        }else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This user is suspended");
+        }
     }
 
     public Driver update(Driver driver, double rate, long rideId, String customerName) {
